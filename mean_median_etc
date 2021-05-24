@@ -1,0 +1,15 @@
+numeros <- c(1, 2, 3, 4, 5)
+numeros
+## Calcula a media do grupo "numeros" ##
+mean(numeros)
+## Calcula a mediana do grupo "numeros" ##
+median(numeros)
+lista <- c(2, 3, 7, 8, 1, 3, 4, 8, 22, 67, 19)
+## Calcula a media do grupo "lista" ##
+mean(lista)
+## Calcula a mediana do grupo "numeros" ##
+median(lista)
+## Checa para normalidade da distribuição (perto de 1 é normal, longe disso, sobretudo p<0.5 não é normal) ##
+shapiro.test(numeros)
+shapiro.test(lista)
+summary(lista)
