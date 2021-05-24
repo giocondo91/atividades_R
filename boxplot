@@ -13,3 +13,7 @@ boxplot(numeros)
 ## Para salvar como uma figura .png e usar, por exemplo, num paper. Neste caso, usaremos a largura e altura de 700px ##
 
 png(file="User/pasta/boxplot.png", width=700, height=700)
+
+## Para encerrar quando formamos a imagem .png ##
+
+dev.off()
