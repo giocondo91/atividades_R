@@ -1,0 +1,27 @@
+
+####################################################################################################################################
+
+# Aprendendo a usar os testes de correlação (Pearson e Spearman) #
+
+## Pearson é usada quando há uma distribuição do tipo normal e Spearman é o seu "irmão" para quando a distribuição não for normal ##
+
+####################################################################################################################################
+
+
+# Primeiro, vamos abrir o conjunto de dados e criar uma varíavel para ele, chamada de "nums" #
+
+nums <- read.csv(file="[caminho do arquivo]/numeros.csv")
+
+# Dentro desse conjunto de dados, temos uma coluna chamada X1 e outra chamada X2. Nesse caso, para acessar X1, usamos nums$X1 e, para X2, usamos nums$X2. Para realizarmos a correlação de X1 com X2, usaremos a função cor(), do seguinte jeito: #
+
+cor(nums$X1, nums$X2)
+
+# No caso da correlação, o resultado fica entre -1 e +1. Quanto mais próxima de -1, mais forte é a correlação inversa. Quanto mais próximo de +1, mais forte é a correlação postiva #
+## Por ex: cor(x1, x2) - se o resultado for 0.9, significa que x1 e x2 estão fortemente e positivamente correlacionadas (quando uma variavel aumenta, a outra aumenta junto). Se o resultado for, por exemplo -0.8 ou -0.9, elas estão fortemente negativamente (ou inversamente) correlacionadas, ou seja, quando x1 aumenta, x2 diminui ou vice-versa ##
+
+# Podemos também escolher o método utilizado na correlação. Se sabemos que há uma distribuição normal, usamos Pearson. Do contrário, com distribuição do tipo não normal, utilizaremos o método Spearman #
+
+## Ex Pearson
+cor(x1, x2, method="pearson")
+## Ex Spearman
+cor(x1, x2, method="spearman")
