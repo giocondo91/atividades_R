@@ -1,0 +1,90 @@
+# Nesta atividade, iremos utilizar um conjunto de dados sobre a área e o preço de casas para trabalhar o conceito de regressão linear #
+
+
+# Usaremos a library readxl para conseguir ler o arquivo excel #
+
+library(readxl)
+
+# Salvaremos como a variável "dados"
+
+dados <- read_excel("C:/Users/ThinkPad/Downloads/regressaolinear_r-master/regressaolinear_r-master/dados.xlsx")
+
+# Com o comando view(dados) a gente consegue ver o nosso conjunto de dados de forma mais visual #
+
+View(dados)
+
+# Faremos um gráfico de dispersão para analisar visualmente possíveis correlações ("ANÁLISE EXPLORATÓRIA") entre as variáveis contidas no banco de dados. Para isso, faremos uso da função plot(x1, x2) #
+## Nesse caso, x1 e x2 são variáveis de interesse. Como estão contidas no conjunto de dados "dados", usaremos o símbolo de dólar "$" para acessá-las ##
+
+plot(dados$area, dados$preco)
+
+# Podemos usar algumas artimanhas para melhorar a aparência do gráfico #
+## use a seta para cima do teclado para repetir o último comando usado e dai vamos manipular para deixá-lo melhor ##
+
+plot(dados$area, dados$preco,)
+plot(dados$area, dados$preco, main = "Diagrama de dispersão", xlab = "Área do imóvel",  ylab = "Preço do imóvel", pch = 19)
+
+# Agora usaremos a função cor() para descobrir o valor da linha de correlação entre as variáveis #
+## Vamos colocar as variáveis com outros nomes para ficar mais limpo e não ter que acessá-las usando o sinal "$" toda hora ##
+
+area_imovel <- dados$area
+preco_imovel <- dados$preco
+
+cor(area_imovel, preco_imovel)
+
+# Correlação aqui nos traz o valor de 0.97, ou seja: As variáveis estão fortemente e positivamente correlacionadas. Quando a área do imóvel aumenta, geralmente o seu preço também aumenta #
+
+# Vamos tentar utilizar um teste para checar a correlação, que deverá nos retornar um p-value #
+
+cor.test(area_imovel, preco_imovel)
+
+# Nos traz um p-value < 2.2e-16, ou seja, podemos confiar, é estatisticamente significante #
+
+# Vamos importar o mesmo dataset, porém com tempo e preço, ao invés da área, para isso usaremos a função import dataset do environment, clicamos em cima da coluna a ser "skip" (pulada) e importamos #
+
+library(readxl)
+dados <- read_excel("C:/Users/ThinkPad/Dropbox/Programming and Other Stuff/R/Linear Regression and correlation project/dados.xlsx", 
+                      +     col_types = c("numeric", "skip", "numeric"))
+View(dados)
+
+# Agora iremos fazer um gráfico de dispersão (plot) usando as variáveis tempo e preço. Antes disso, vamos mudar o nome delas para ficar mais limpo e evitar o uso do "$" demasiadamente #
+
+preco_imovel <-  dados$preco
+tempo <- dados$tempo
+
+plot(tempo, preco_imovel)
+
+# Agora vamos fazer um teste de correlação para analisar se esta correlação é estatisticamente significativa #
+
+cor.test(tempo, preco_imovel)
+
+# O resultado nos retorna um valor de -0.8780, o que é forte e negativamente correlacionado (condizente com o nosso gráfico). Além disso, temos que o p-value < 2.2e-16, ou seja, é muito pequeno (menor que .01) e estatisticamente significativo #
+
+# O uso do boxplot nos ajuda a ver se os nossos dados foram colhidos de maneira adequada e não estão aberrantes. Para isso, usaremos a função boxplot() do R #
+
+boxplot(preco_imovel)
+boxplot(tempo)
+
+# A função summary() nos ajuda fazendo uma análise descritiva das nossas variáveis. Podemos, por exemplo, fazer um summary do preço e do tempo, a seguir: #
+boxplot(preco_imovel)
+summary(preco_imovel)
+## No caso do summary do preco_imovel, os valores representam valores que estão no gráfico do boxplot. Por exemplo, o mínimo 733343 e o máximo 1607974. Além disso, temos o primeiro e o 3 quartis, em que a maioria dos valores estará representada. A média está representada pela linha mais escura no meio. 
+
+### Um desses casos apresenta o preço muito acima dos demais, é chamado de "Outlier". Tem um package do R (pacote "car") que nos permite avaliar tais outliers ###
+
+install.packages("car")
+library(car)
+
+# Agora podemos fazer o mesmo boxplot do preço e o resultado do outlier será mostrado. Porém, usaremos a função Boxplot(preco_imovel) começando com a letra B maiúscula #
+
+Boxplot(preco_imovel)
+
+# Neste caso, temos que o Outlier (valor aberrante) é a posição 79. Podemos também usar o colchetes [] para acessar uma posição específica e ver se o valor é aberrante mesmo #
+
+preco_imovel[79]
+
+# Resulta em 1607974, que de fato é bem maior que os valores habituais #
+
+# Também podemos usar a função which() para saber quais valores possuem determinado valor. Por exemplo, quais preços do nosso conjunto de dados está acima do percentil 75? #
+
+which(preco_imovel > quantile(preco_imovel, 0.75))
