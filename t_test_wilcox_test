@@ -1,0 +1,31 @@
+# Aprendendo a usar o t-test pensando em um remédio anti-térmico #
+
+## A função runif cria elementos aleatórios e se baseia em 3 parâmetros, quais sejam: ##
+
+### a = a quantidade de elementos aleatórios (Ex: 30 neste exemplo) ###
+### b = o número mínimo (Ex: 37.9 neste exemplo) ###
+### c = o número máximo (Ex: 38.8 neste exemplo) ###
+
+# Primeiro grupo de dados, pois para usar o t-test iremos comparar dois grupos #
+
+x1 <- runif(30, 37.9, 38.8)
+x1
+
+# Segundo grupo de dados com os quais iremos comparar o x1 e x2 #
+
+x2 <- runif(30, 36.0, 38.2)
+x2
+
+#A nossa Hipótese nula (H0) é aquela hipótese que queremos anular, ou seja, de que o remédio não faz efeito. A Hipótese alternativa (Halt) é que o remédio faz a diferença na temperatura do corpo da pessoa.
+
+# T-test #
+## Vamos, enfim, rodar o Teste do Estudante, utilizando o comando "t.test( )" ##
+
+t.test(x1, x2)
+
+### Neste caso, temos que o p-value é 2.111e-12, ou seja, um número muito pequeno e que nos faz facilmente rejeitar a H0 e aceitar Halt ###
+
+# Wilcox-test #
+## Neste caso, podemos rodar um teste de wilcox.test() quando a distribuição for "não normal": ##
+
+wilcox.test(x1, x2)
