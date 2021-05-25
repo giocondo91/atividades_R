@@ -1,0 +1,37 @@
+####################################################################################################################################
+REGRESSÃO LINEAR
+####################################################################################################################################
+
+# Usamos regressão linear para entender como duas variáveis funcionam, e tentar prever possíveis números que não estão dentro da distribuição atual. A ideia por trás da regressão linear é encontrar a melhor função de primeiro grau, que explica a distribuição dos dados. #
+
+## É representanda por "f(X) = C + aX" ##
+
+### PROBLEMA DA REGRESSÃO LINEAR: O problema é que às vezes uma simples função de primeiro grau pode não ser suficiente. É por isso que antes de aplicá-la, você deve olhar a distribuição (por exemplo através do Scatterplot) e ver o quanto a função realmente se aproxima dos pontos já conhecidos ###
+
+
+# Vamos criar um conjunto de dados, em que serão colocadas nas seguintes variáveis: #
+
+x1 <- c(1, 2, 3)
+x2 <- c(2, 4, 6)
+
+# Para aplicarmos a Regressão linear utilizamos o comando "lm(formula = x2 ~ x1 )". Estamos buscando o modelo linear (lm) com uma fórmula onde x2 depende de x1 (x2 ~ x1): #
+
+lm(formula = x2 ~ x1)
+
+## Leia: linear model (lm), cuja fórmula é a seguinte -> x2 "depende de ~" x1 ##
+
+### O resultado do modelo retorna constante (intercept) = 0 e multiplicador (x1) = 2. Logo a seguinte função é que representa nosso modelo: ###
+
+f(x) = 2x + 0
+
+# Criemos uma nova variável chamada "x3": #
+
+x3 <- c(3, 5, 7)
+
+## Vamos ver a sua relação com a variável x1: ##
+
+lm(formula = x3 ~ x1)
+
+### Leia: regressão linear em que x3 depende de x1 e o modelo retorna intercept (constante) = 1 e multipliador (x1) = 2. Logo, a função que representará este modelo é: ###
+
+f(x) = 2x + 1
