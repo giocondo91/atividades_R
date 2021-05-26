@@ -1,0 +1,54 @@
+# Vamos usar o conjunto de dados referente à quantidade de horas de estudos e a nota numa prova de matemática #
+
+data <- read.csv2("C:/Users/ThinkPad/Downloads/regressaolinear_r-master/regressaolinear_r-master/data.txt", sep="")
+View(data)
+
+# Vamos renomear as variáveis para ficar mais fácil e evitar o uso excessivo de "$"
+
+hora <- data$nota
+nota <- data$hora_estudo
+
+# Agora vamos montar o nosso modelo #
+
+modelo = lm(nota ~ hora, data = data)
+
+# Agora vamos montar um gráfico de dispersão #
+
+plot(hora, nota,
+     main = "Diagrama de Dispersão \n e equação da reta",
+     xlab = "Horas de estudo por semana",
+     ylab = "Notas em Matemática",
+     pch = 19,)
+abline(modelo,
+       col = "red",
+       lty = 2,
+       lwd = 3)
+
+summary.lm(modelo)
+
+# O R2 (R squared) é a porcentagem do modelo que consegue explicar tal variação. Logo, se nosso R2 é elevado (próximo de 1), temos que grande parte da variação é explicada pelo nosso modelo #
+
+# Vamos analizar os resíduos #
+
+plot(modelo$residuals)
+
+# Queremos que os resíduos estejam totalmente aleatórios, pois se estiverem organizados ou com uma determinada tendência, é ruim #
+
+identify(modelo$residuals, n=2)
+
+# Podemos remover as observações que estão mais outliers. Por exemplo, vamos retirar as oservações entre 0 e 10 que estão muito diferentes do padrão #
+
+dados1 = dados[-1,]
+dados1_2 = dados[c(-1, -2),]
+
+# Vamos instalar um pacote para poder usar algumas funções a mais referentes a linear models. Com isso, poderemos usar o teste de Durbin-Watson, que pode avaliar se há autorelação nos residuals #
+
+install.packages("lmtest")
+library("lmtest")
+
+dwt(modelo)
+
+# Vamos usar um outro teste, chamado Breusch-Pagan test, que vai nos trazer um p-value e trazer a ideia se os erros são  homocedásticos, ou seja, que as variâncias deles são iguais #
+
+bptest(modelo)
+
