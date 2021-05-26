@@ -1,0 +1,48 @@
+# Neste exercício, usaremos os principais testes e também elaboraremos um modelo preditivo para nosso conjunto de dados #
+
+novosdados = data.frame(hora_estudo = c(2, 2, 9, 1, 5, 4, 3, 5, 8, 9))
+
+predict(modelo, newdata = novosdados)
+
+# Passo 1: Importar a data
+
+* Import Dataset
+* From Text (base)
+* Selecionar o documento com os dados e abrir ele (Open)
+* Por o nome `dados` e Importar
+
+# Passo 2: Ajustar a reta de regressão linear simples das notas (nota) em função das horas de estudo (hora_estudo) do conjunto de dados cujo não é dados.
+
+modelo = lm(nota ~ hora_estudo,data = dados)
+
+# Passo 3: Checar as suposições do modelo de maneira gráfica e por testes de hipótese.
+
+par(mfrow = c(2,2))
+plot(modelo$residuals,
+main = "Residuos",
+ylab = "")
+plot(modelo$fitted.values,modelo$residuals,
+main = "Resíduos contra notas \n preditas dos alunos \n",
+xlab = "Notas preditas dos alunos",
+ylab = "Resíduos")
+plot(modelo,2)
+
+# Checar por testes de hipóteses
+
+library(lmtest)
+# Independência
+dwtest(modelo)
+# Homoscedasticidade
+bptest(modelo)
+# Normalidade
+shapiro.test(modelo$residuals)
+
+# Passo 4: Prever notas dos 10 alunos novos
+
+# Criar um conjunto de dados com as horas de estudo dos 10 alunos novos:
+
+novosdados = data.frame(hora_estudo = c(2, 2, 9, 1, 5, 4, 3, 5, 8, 9))
+
+# Prever notas dos 10 alunos novos:
+
+predict(modelo, newdata = novosdados)
