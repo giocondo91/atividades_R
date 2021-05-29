@@ -1,0 +1,338 @@
+---
+title: "Projeto: O que afeta a qualidade do ar? Um projeto para estudar Regressão Linear, Regressão Múltipla e Data Exploring e Visualization"
+output: html_notebook
+---
+
+### PERGUNTA DO PROJETO: O QUE AFETA E COMO AFETA A QUALIDADE DE AR? ###
+
+### OBJETIVOS: APRENDER, POR MEIO DESSE PROJETO DE QUALIDADE DO AR A USAR ANÁLISE DESCRITIVA EXPLORATÓRIA, ANALISE VISUAL E GRAFICA, MODELAGEM DE REGRESSÃO LINEAR E MULTIPLA E ANOVA ###
+
+##################################################### ETAPAS ##################################################################
+### 1. INSTALAR E CARREGAR OS PACOTES UTILIZADOS "Ecdat" ###
+### 2. UTILIZAR O BANCO DE DADOS "Airq ###
+### 3. DESCREVER AS VARIÁVEIS DO BANCO DE DADOS (airq, vala, coas, dens...) ###
+### 4. ANÁLISE DESCRITIVA USANDO A FUNÇÃO SUMMARY() ###
+### 5. USAR A FUNÇÃO PLOT() PARA COMEÇAR A EXPLORAR POSSÍVEIS RELAÇÕES ###
+### 6. USAR A FUNÇÃO LM() PARA FAZER MODELOS DE REGRESSÃO LINEAR ENTRE VARIÁVEIS ###
+### 7. USAR A FUNÇÃO LM() E MAIS DE UMA VARIÁVEL PARA CHECAR AS MULTIPLAS REGRESSOES ###
+### 8. USAR OS PARAMETROS DENTRO DO PLOT PARA MANIPULAR GRAFICAMENTE E MELHORAR A QUALIDADE DOS GRÁFICOS (main, pch, tdy, cel.lab,etc) ###
+### 9. USAR A FUNÇÃO anova() PARA COMPARAR O modelocompleto E O modeloincompleto (se p-value <.05, há diferença E MANTEMOS O MODELO MAIS COMPLEXO)
+###############################################################################################################################
+
+
+# Vamos instalar e abrir o package "Ecdat" #
+
+```{r}
+install.packages("Ecdat")
+library(Ecdat)
+```
+
+# Agora vamos usar o banco de dados que está disponível neste pacote e que será utilizado neste projeto #
+
+```{r}
+data("Airq")
+```
+
+# Vamos visualizar nossa data usando a função View() #
+
+```{r}
+View(Airq)
+```
+
+# Descrição das variáveis #
+
+#airq = indice de qualidade de ar. Nesse caso, quanto maior o indice, pior e mais sujo o ar (quanto menor, melhor)
+#vala = valor das empresas na cidade (em milhares de dólares)
+#rain = indice pluviometrico (em polegadas)
+#coas = posição costeira da cidade (sim ou não)
+#dens = densidade populacional (milha quadrada)
+#med = renda média per capita (em dólares)
+
+# Vamos mudar o nome dessas variáveis para retirar o uso excessivo de "$" toda vez que quisermos acessá-las #
+
+```{r}
+airq <- Airq$airq
+vala <- Airq$vala
+rain <- Airq$rain
+coas <- Airq$coas
+dens <- Airq$dens
+medi<-  Airq$medi
+```
+
+
+# Vamos fazer uma análise descritiva dessas variáveis usando o comando summary() #
+
+```{r}
+summary(Airq)
+```
+# Com isso, conseguimos ver por exemplo que a variável "coas" é do tipo categórica "sim" ou "não" (yes/no) #
+
+# A variável resposta é "airq" e as outras variáveis são variáveis explicativas (que podem explicar a qualidade do ar) #
+
+# Podemos analizar possíveis funções entre as variáveis para tentar explorar inicialmente algumas correlações. Por exemplo, vamos estudar a relação entre a variável "vala" e a variável resposta "airq". Isso não implica necessariamente na significância, efeito e causalidade. Para analizar essas funções, usamos a função plot(), que segue a lógica plot(x,y), sendo que x = variável resposta e y = variavel explicativa #
+
+```{r}
+plot(airq~vala, data = Airq)
+```
+# Criando um modelo estatístico #
+# y (resposta) ~ x (explicativa) #
+# Por ex: Em relação ao adubo e planta, qual será que influencia a resposta? Nesse caso, a quantidade de adubo que influencia o crescimento de uma planta e não o inverso. Nesse caso, seria:
+# y (crescimento da planta) ~ x (quantidade de adubo na planta) #
+# Se usarmos por exemplo outro fator que também possa impactar no crescimento da planta, como a quantidade de luz que incide nela, poderiamos por exemplo usar y (crescimento da planta) e x1 (quantidade de adubo) e x2 (quantidade de luz solar recebida). Nesse novo modelo, ficaria algo do tipo:
+# y (crescimento da planta) ~ x1 (quantidade de adubo) + x2 (quantidade de luz solar recebida) 
+#----------------------------------------------------------------------------------------------
+# No nosso exemplo da qualidade do ar:
+# airq ~ vala + rain + coas + dens + medi
+#----------------------------------------------------------------------------------------------
+
+# Podemos usar uma regressão, pois algumas variáveis são contínuas. REGRESSÃO LINEAR = VARIÁVEIS CONTÍNUAS E USAMOS RETA!!! #
+
+# Modelo 1
+
+```{r}
+m1 <- lm(airq~vala, data=Airq)
+```
+
+# Para checar se o nosso modelo é significativo, podemos usar a função summary desse modelo e checar o p-value, que indica a significância do modelo usado. Nesse caso, perceba que o p-value é .0794, ou seja, não é significativo #
+
+```{r}
+summary(m1)
+```
+# Para chegar nos valores da reta, precisamos dos valores Intercept e da inclinação referente à variável explicativa "vala". Para isso, podemos apenas digitar o nome do nosso modelo #
+
+```{r}
+m1
+```
+
+##Se o p < .05, então o modelo é significativo
+
+##Se o p> .05, então não podemos aceitar nosso modelo como significativo
+
+# Portanto, podemos dizer que no nosso modelo a variável "vala" não afetou a qualidade do ar "airq", pois o p-value é maior que .05
+
+# Vamos usar agora o segundo modelo:
+
+```{r}
+m2 <- lm(airq~coas, data = Airq)
+```
+
+# Vamos checar se nosso modelo usando a variável costeira e a resposta qualidade de ar (airq) é significativo
+
+```{r}
+summary(m2)
+```
+## Podemos checar que nesse nosso modelo "m2" o p-value é bem abaixo de .05, na verdade ele é de .005, ou seja, o modelo é significativo #
+
+# Para tentar entender o tanto que a variável "coas" afeta a qualidade do ar "airq", podemos usar um boxplot e analizar graficamente #
+
+```{r}
+boxplot(airq~coas, data = Airq)
+```
+## Nesse gráfico de boxplot, a gente entende o seguinte: quando o local é próximo da região costeira, ou seja, "coas" = "yes", a qualidade do ar fica melhor, o "airq" fica mais baixo ##
+
+
+# Vamos testar outras variáveis #
+
+```{r}
+m3 <- lm(airq~medi, data = Airq)
+```
+# Vamos ver o valor e checar o nosso modelo #
+
+```{r}
+summary(m3)
+```
+
+## O p-value foi de .18, ou seja, não há significância #
+
+```{r}
+plot(airq~medi, data = Airq)
+```
+
+# Será que a quantidade de chuva influencia a qualidade do ar? #
+
+```{r}
+m4 <- lm(airq~rain, data = Airq)
+```
+
+```{r}
+summary(m4)
+```
+## O nosso p-value aqui deu .891, ou seja, a quantidade de chuva não influencia a qualidade do ar ##
+
+# Será que a densidade populacional afeta a qualidade do ar? #
+
+```{r}
+m5 <- lm(airq~dens, data=Airq)
+```
+
+```{r}
+summary(m5)
+```
+## O nosso p-value é de .838, ou seja, não é significativo e não podemos dizer que há efeito entre densidade populacional(dens) e qualidade do air (airq)
+
+
+### A única variável testada que tem efeito na qualidade do ar é a posição costeira (coas) ###
+
+
+# Lembremos que retas de modelos não explicativos são opcionais (se não há efeito, não tem necessidade de fazer uma reta)
+
+# Vamos ver como fazer a reta nos gráficos, usando como exemplo a variável resposta "airq" e a variávele explicativa "medi" #
+
+```{r}
+plot(airq~medi, data = Airq)
+```
+
+## Equação da reta é "y = a + b*x", em que "b" é a inclinação da reta, "a" é o intercepto (onde a reta toca o eixo y) 
+# a =  intercepto (onde toca o eixo y)
+# b = inclinação da reta (angulação da reta)
+
+# Para criar nossa reta, usaremos o comando curve(), que serve tanto para curvas como retas. Como nos baseamos no modelo "m3", a gente precisa pegar as informações de intercept e coeficiente desse modelo para pode usar na função curve(). Para isso, usamos o summary(m3) e pegamos os dados de interesse
+
+```{r}
+summary(m3)
+```
+## o intercept é 9.936e+01
+
+```{r}
+plot(airq~medi, data = Airq)
+curve(9.936e+01 + 5.638e-04*x, add=TRUE)
+```
+
+## O add=TRUE serve para manter a reta no mesmo gráfico que a gente já fez ##
+
+# Podemos melhorar o nosso gráfico, que está meio "cru" #
+
+```{r}
+plot(airq~medi, data = Airq, xlab = "Renda Média per Capita", ylab = "Qualidade do ar")
+curve(9.936e+01 + 5.638e-04*x, add=TRUE)
+```
+
+# Podemos modificar as bolinhas no tipo e cor , bem como modificar o tamanho do eixo #
+
+```{r}
+plot(airq~medi, data = Airq, xlab = "Renda Média per Capita", ylab = "Qualidade do ar", pch=1, col="blue", cex.lab=1.3)
+curve(9.936e+01 + 5.638e-04*x, add=TRUE, col="darkblue")
+```
+# Podemos modificar a espessura dessa linha usando o especificador "lwd" (line width) #
+
+```{r}
+plot(airq~medi, data = Airq, xlab = "Renda Média per Capita", ylab = "Qualidade do ar", pch=1, col="blue", cex.lab=1.3)
+curve(9.936e+01 + 5.638e-04*x, add=TRUE, col="darkblue", lwd=2)
+```
+# Podemos também modificar o estilo da linha, colocando por ex. uma linha pontilhada usando o lty=2 #
+
+```{r}
+plot(airq~medi, data = Airq, xlab = "Renda Média per Capita", ylab = "Qualidade do ar", pch=1, col="blue", cex.lab=1.3)
+curve(9.936e+01 + 5.638e-04*x, add=TRUE, col="darkblue", lwd=2, lty=2)
+```
+
+# Para dar título ao nosso gráfico, usamos o especificador "main" #
+
+```{r}
+plot(airq~medi, data = Airq, xlab = "Renda Média per Capita", ylab = "Qualidade do ar", pch=1, col="blue", cex.lab=1.3, main = "Renda Média - 2010")
+curve(9.936e+01 + 5.638e-04*x, add=TRUE, col="darkblue", lwd=2)
+```
+
+############################################################################################################
+# ATÉ AGORA USAMOS REGRESSÕES LINEARES PARA CHECAR UMA VARIÁVEL SOBRE A OUTRA, MAS PODEMOS CHECAR A INTERAÇÃO
+# DE VÁRIAS VARIÁVEIS SOBRE OUTRAS (MODELOS DE REGRESSÃO MULTIPLA) #
+############################################################################################################
+
+# Agora faremos alguns modelos de regressões múltiplas #
+
+#mRM1 = Modelo de regressão múltipla 1
+
+```{r}
+mRM1 <- lm(airq~vala+coas, data = Airq)
+```
+# Vamos fazer um summmary(mRM1) para dar uma olhada no nosso modelo de regressão multipla 1 (mRM1) #
+
+```{r}
+summary(mRM1)
+```
+
+## Veja que no nosso modelo ambas as variáveis explicaticas são significativas, tanto "vala" quanto "coas" possuem um p-value <.05. Nesse caso, temos o seguinte:
+
+### "vala" possui um p-value = 0.04264 *
+### "coas" possui um p-value = 0.00369 **
+
+# Agora vamos fazer um gráfico do nosso modelo de regressão multipla #
+
+# Vamos plotar assim como no modelo linear #
+
+```{r}
+plot(airq~vala, data = Airq)
+```
+# Vamos ter 2 retas, uma para cidades que estão costeiras e outra que para cidades que não estão na posição costeira #
+
+```{r}
+plot(airq~vala, data = Airq, xlab = "Valor das empresas ($)",
+  ylab = "Qualidade do ar (airq)")
+  curve(1.171e+02 + 1.999e-03*x, add = TRUE) # Cidade não costeira
+  curve(1.171e+02 + 1.999e-03*x + -2.968e+01,lty=2, add=TRUE) # Cidade Costeira
+```
+
+# Vamos colocar legenda no nosso gráfico #
+
+```{r}
+plot(airq~vala, data = Airq, xlab = "Valor das empresas ($)",
+  ylab = "Qualidade do ar (airq)")
+  curve(1.171e+02 + 1.999e-03*x, add = TRUE) # Cidade não costeira
+  curve(1.171e+02 + 1.999e-03*x + -2.968e+01,lty=2, add=TRUE) # Cidade Costeira
+  legend("bottomright", c("Não Costeiras", "Costeiras"), pch = 1, lty = c(1,2), bty = "n")
+```
+# A qualidade do ar das cidades é afetada tanto pelo valor da empresas (vala) quanto pela posição costeira (coas) #
+
+# Quanto maior o valor das empresas, pior a qualidade do ar das cidades. Além disso, as cidades não-costeiras possuem uma qualidade de ar pior #
+
+# Agora vamos adicionar mais variáveis ao nosso modelo #
+
+# Vamos criar um modelo de Regressão Múltipla 2 (mRM2), em que usamos o mesmo modelo1 (mRM1) porém adicionamos densidade populacional (dens) #
+
+```{r}
+mRM2 <- lm(airq~vala+coas+dens, data = Airq)
+```
+# Vamos checar nosso modelos? 
+
+```{r}
+summary(mRM2)
+```
+
+## Pelo resultado, a gente percebe que as variáveis "vala" e "coas" continuam sendo significativas. Entretanto, a variável "dens", que representa a densidade populacional nos retorna um p-value acima de .05 (p-value = 0.57317).
+
+## Apesar de não existir um efeito em relação à densidade, percebemos que os p-values de "vala" e "coas" ficam diferentes. Ou seja, bem ou mal, essa variável está fazendo efeito nas outras. Em resumo, apesar de não ser significativa, ela pode influenciar nas demais a ponto das demais deixarem de ser significativas ##
+
+## Sendo assim, quais métodos podem ser usados para retirar as variáveis e não afetar tanto as demais variáveis?? ##
+## RESPOSTA: Para isso usaremos a Análise de Variância: O que é explicado pelo modelo e o que não é explicado pelo modelo? CHECAR OS RESÍDUOS (AQUILO QUE NÃO É EXPLICADO PELOS NOSSOS MODELOS!!)
+
+### DICA: O modelo de Regressão Múltipla é, portanto, descrito da seguinte forma: ###
+# lm(var1 ~ var2 + var3) #
+
+
+# Realizaremos o chamado "Contraste de Modelos", comparando com e sem as variáveis e checar o quanto que determinada variável explica #
+
+# Modelo completo(modelocompleto) = com a variávelem questão
+
+```{r}
+modelocompleto <- lm(airq~vala+coas+dens, data = Airq) #Será que nossa variável "dens" pode ser removida sem muita diferença?
+```
+
+# Modelo incompleto(modeloincompleto) vamos remover a variável de interesse para checar se muda muito ou não 
+
+```{r}
+modeloincompleto <- lm(airq~vala+coas, data = Airq) # Tiramos a variável "dens". Será que mantém igual? Checaremos com a Análise de Variância de usando o p-value. Se p>.05, NÃO EXISTE DIFERENÇA ENTRE OS MODELOS. Nesse sentido, temos o seguinte:
+
+# p-value > .05, NÃO EXISTE DIFERENÇA entre os modelos e deveremos optar pelo modelos mais simples, retirando a variável dens.
+# p-value < .05, EXISTE DIFERENÇA entre os modelos, de forma que a variável "dens" deve ser mantida.
+
+# PARA ISSO, USAREMOS A "ANÁLISE DE VARIÂNCIA" (ANOVA) entre "modelocompleto" VERSUS "modeloincompleto"
+```
+
+# Vamos fazer a ANOVA para ver se tem diferença entre os modelos
+
+```{r}
+anova(modelocompleto, modeloincompleto)
+```
+# Veja que nos traz um p-value = 0.5732. Ou seja, NÃO EXISTE DIFERENÇA ENTRE OS MODELOS e devo optar pelo modelo mais simples (sem a variável "dens")
+
+
