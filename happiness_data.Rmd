@@ -1,0 +1,37 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+# Lets study some filter functions for data cleaning
+
+# Firstly we rename some variables like 'Country name' to 'country.name' 
+
+world_happ <- world_hap %>% 
+  rename(
+    `country.name` = `Country name`,
+    ) 
+
+# Remove the old dataset
+rm(world_hap)
+```
+
+```{r}
+brazil <- filter(world_happ, country.name == 'Brazil')
+```
+
+```{r}
+suporte_social <- 
+  plot(
+  brazil$year, brazil$`Social support`, type = "b", pch = 19,
+  col = "blue", xlab = "Ano", ylab = "Suporte Social",
+  main = "Evolução do Suporte Social no Brasil"
+  )
+```
+```{r}
+model <- glm(brazil$`Social support` ~ brazil$year, data = brazil)
+plot(model)
+summary(model)
+```
+
